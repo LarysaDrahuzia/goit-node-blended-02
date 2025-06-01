@@ -1,12 +1,24 @@
 import { ProductsCollection } from '../db/model.products.js';
 
-export const getProducts = async () => {
-  const products = await ProductsCollection.find();
-  return products;
+export const getProducts = async ({ filter = {}, userId }) => {
+  const productsQuery = ProductsCollection.find({ userId });
+
+  if (filter.category) {
+    productsQuery.where('category').equals(filter.category);
+  }
+
+  if (filter.minPrice) {
+    productsQuery.where('price').gte(filter.minPrice);
+  }
+
+  if (filter.maxPrice) {
+    productsQuery.where('price').lte(filter.maxPrice);
+  }
+  return productsQuery;
 };
 
-export const getProductId = async (productId) => {
-  const product = await ProductsCollection.findById(productId);
+export const getProductId = async ({ _id, userId }) => {
+  const product = await ProductsCollection.findOne({ _id, userId });
   return product;
 };
 
@@ -15,11 +27,9 @@ export const createProduct = async (payload) => {
   return product;
 };
 
-export const updateProduct = async (productId, payload, options = {}) => {
+export const updateProduct = async ({ _id, userId }, payload, options = {}) => {
   const rawResult = await ProductsCollection.findOneAndUpdate(
-    {
-      _id: productId,
-    },
+    { _id, userId },
     payload,
     {
       new: true,
@@ -35,7 +45,7 @@ export const updateProduct = async (productId, payload, options = {}) => {
   };
 };
 
-export const deleteProduct = async (productId) => {
-  const product = await ProductsCollection.findOneAndDelete({ _id: productId });
+export const deleteProduct = async ({ _id, userId }) => {
+  const product = await ProductsCollection.findOneAndDelete({ _id, userId });
   return product;
 };

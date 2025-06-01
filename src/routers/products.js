@@ -1,5 +1,7 @@
 import { Router } from 'express';
 import { ctrlWrapper } from '../utils/ctrlWrapper.js';
+import { validateBody } from '../middlewares/validateBody.js';
+import { isValidId } from '../middlewares/isValidId.js';
 import {
   getProductsController,
   getProductIdController,
@@ -7,17 +9,30 @@ import {
   patchProductController,
   deleteProductController,
 } from '../controllers/products.js';
+import { createProductSchema } from '../validation/products.js';
+import { authenticate } from '../middlewares/authenticate.js';
 
 const router = Router();
 
-router.get('/products', ctrlWrapper(getProductsController));
+router.use(authenticate);
 
-router.get('/products/:productId', ctrlWrapper(getProductIdController));
+router.get('/', ctrlWrapper(getProductsController));
 
-router.post('/products', ctrlWrapper(createProductController));
+router.get('/:productId', isValidId, ctrlWrapper(getProductIdController));
 
-router.patch('/products/:productId', ctrlWrapper(patchProductController));
+router.post(
+  '/',
+  validateBody(createProductSchema),
+  ctrlWrapper(createProductController),
+);
 
-router.delete('/products/:productId', ctrlWrapper(deleteProductController));
+router.patch(
+  '/:productId',
+  validateBody(createProductSchema),
+  isValidId,
+  ctrlWrapper(patchProductController),
+);
+
+router.delete('/:productId', isValidId, ctrlWrapper(deleteProductController));
 
 export default router;

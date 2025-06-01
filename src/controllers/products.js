@@ -6,9 +6,12 @@ import {
   updateProduct,
   deleteProduct,
 } from '../services/products.js';
+import { parseFilterParams } from '../utils/parseFilterParams.js';
 
 export const getProductsController = async (req, res, next) => {
-  const products = await getProducts();
+  const filter = parseFilterParams(req.query);
+
+  const products = await getProducts({ filter, userId: req.user._id });
   res.json({
     status: 200,
     message: 'Successfully found products!',
@@ -18,7 +21,10 @@ export const getProductsController = async (req, res, next) => {
 
 export const getProductIdController = async (req, res) => {
   const { productId } = req.params;
-  const product = await getProductId(productId);
+  const product = await getProductId({
+    _id: productId,
+    userId: req.user._id,
+  });
 
   if (!product) {
     throw createHttpError(404, 'Product not found');
@@ -31,7 +37,7 @@ export const getProductIdController = async (req, res) => {
 };
 
 export const createProductController = async (req, res) => {
-  const product = await createProduct(req.body);
+  const product = await createProduct({ ...req.body, userId: req.user._id });
 
   res.status(201).json({
     status: 201,
@@ -42,7 +48,13 @@ export const createProductController = async (req, res) => {
 
 export const patchProductController = async (req, res, next) => {
   const { productId } = req.params;
-  const result = await updateProduct(productId, req.body);
+  const result = await updateProduct(
+    {
+      _id: productId,
+      userId: req.user._id,
+    },
+    req.body,
+  );
 
   if (!result) {
     return next(createHttpError(404, 'Product not found!'));
@@ -56,7 +68,10 @@ export const patchProductController = async (req, res, next) => {
 
 export const deleteProductController = async (req, res, next) => {
   const { productId } = req.params;
-  const product = await deleteProduct(productId);
+  const product = await deleteProduct({
+    _id: productId,
+    userId: req.user._id,
+  });
 
   if (!product) {
     return next(createHttpError(404, 'Product not found!'));
