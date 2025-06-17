@@ -12,7 +12,7 @@ tags:
     description: Operations about users
 servers:
   - url: http://localhost:3000
-  - url: #посилання на задеплоєний сайт
+  - url: https://goit-node-blended-02.onrender.com
 paths:
   /products:
     get:
