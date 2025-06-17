@@ -1,0 +1,41 @@
+tags:
+  - Products
+summary: Get product by id
+operationId: getProductId
+description: 'Get product by id'
+security:
+  - bearerAuth: []
+parameters:
+  - in: path
+    name: productId
+    required: true
+    schema:
+      type: string
+      example: '683ad04088b81c33db46ce74'
+responses:
+  '200':
+    description: 'Successfully found product by id'
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - status
+            - message
+            - data
+          properties:
+            status:
+              type: integer
+              example: 200
+            message:
+              type: string
+              example: 'Successfully found product by id 683ad04088b81c33db46ce74'
+            data:
+              type: object
+              $ref: ../../../components/schemas/product.yaml
+  '401':
+    $ref: ../../../components/responses/401.yaml
+  '404':
+    $ref: ../../../components/responses/404.yaml
+  '500':
+    $ref: ../../../components/responses/500.yaml

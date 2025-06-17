@@ -1,0 +1,33 @@
+type: object
+required:
+  - _id
+  - name
+  - price
+  - category
+  - userId
+properties:
+  _id:
+    description: 'Product`s id'
+    type: string
+    example: '683ad04088b81c33db46ce74'
+  name:
+    description: 'Product`s name'
+    type: string
+    example: 'Novel'
+  price:
+    description: 'Product`s price'
+    type: number
+    example: 20.99
+  category:
+    description: 'Product`s category'
+    type: string
+    enum: ['books', 'electronics', 'clothing', 'other']
+    example: 'other'
+  description:
+    description: 'Product`s description'
+    type: string
+    example: 'A modern novel with elements of humor'
+  userId:
+    description: 'Product creator'
+    type: string
+    example: '683ab9048a7d6ac73d0a56c9'
